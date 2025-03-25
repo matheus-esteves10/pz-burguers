@@ -44,8 +44,7 @@ public class Usuario {
     }
 
     public void setEmail(String email) {
-        String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-        if (email == null || !Pattern.matches(EMAIL_REGEX, email)) {
+        if (!validaEmail(email)) {
             throw new IllegalArgumentException("Email inválido");
         }
         this.email = email;
@@ -65,5 +64,13 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public boolean validaEmail(String email) {
+        String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        if (email == null || !Pattern.matches(EMAIL_REGEX, email)) {
+            return false;
+        }
+        return true;
     }
 }
