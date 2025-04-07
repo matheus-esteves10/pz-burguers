@@ -1,34 +1,27 @@
 {
-  "id": 1,
-  "valorTotal": 49.90,
-  "status": "SOLICITADO",
-  "enderecoEntrega": "Rua das Flores, 123, Centro",
-  "observacoes": "Sem cebola",
-  "usuario": {
-    "id": 101,
-    "nome": "João Silva",
-    "email": "joao.silva@email.com",
-		"telefone": null,
-		"senha": null
-  },
+  "idPedido": 1,
+  "idUsuario": 101,
+  "statusPedido": "EM_PREPARO",
+  "endereco": "Rua das Acácias, 123",
+  "observacoes": "Sem cebola no lanche",
   "itens": [
     {
       "id": 1,
       "item": {
         "id": 10,
-        "nome": "X-Burger",
-        "valor": 19.90
-      },
-      "quantidade": 2
+        "nome": "X-Burguer",
+				"quantidade": 1,
+        "precoUnitario": 19.90
+      }
     },
     {
       "id": 2,
       "item": {
         "id": 11,
-        "nome": "Batata Frita",
-        "valor": 10.00
-      },
-      "quantidade": 1
+        "nome": "Batata Média",
+				"quantidade": 1,
+        "precoUnitario": 9.50
+      }
     }
   ]
 }

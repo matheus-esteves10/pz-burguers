@@ -1,5 +1,6 @@
 package br.com.fiap.PzBurguer.controller;
 
+import br.com.fiap.PzBurguer.dto.PedidoDto;
 import br.com.fiap.PzBurguer.model.Pedido;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
 import org.slf4j.Logger;
@@ -23,20 +24,19 @@ public class PedidoController {
 
     @GetMapping
     public List<Pedido> index() {
-        log.info("Retornando todos os pedidos ");
         return repository.findAll();
     }
 
     @GetMapping("/{id}")
     public Pedido getPedidoById(@PathVariable Long id) {
-        log.info("Retornando pedido de ID " + id);
         return repository.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Pedido> create(@RequestBody Pedido pedido) {
-        log.info("Criando pedido de ID " + pedido.getId());
+    public ResponseEntity<Pedido> create(@RequestBody PedidoDto dto) {
+        log.info("Criando pedido de ID " + dto.idPedido());
+        Pedido pedido = new Pedido(dto);
         Pedido created = repository.save(pedido);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -49,8 +49,9 @@ public class PedidoController {
     }
 
     @PutMapping("/{id}")
-    public Pedido update(@PathVariable Long id, @RequestBody Pedido pedido) {
+    public Pedido update(@PathVariable Long id, @RequestBody PedidoDto dto) {
         log.info("Atualizando o pedido " + id);
+        Pedido pedido = new Pedido(dto);
         return repository.update(id, pedido);
     }
 }

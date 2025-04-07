@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public class PedidoRepository {
 
-    private List<Pedido> pedidos = new ArrayList<>();
+    private final List<Pedido> pedidos = new ArrayList<>();
 
     public List<Pedido> findAll() {
         return pedidos;

@@ -4,15 +4,14 @@ package br.com.fiap.PzBurguer.model;
 public class ItemPedido {
     private Long id;
     private Item item;
-    private int quantidade;
+
 
 
     public ItemPedido() {}
 
-    public ItemPedido(Long id, Item item, int quantidade) {
+    public ItemPedido(Long id, Item item) {
         this.id = id;
         this.item = item;
-        this.quantidade = quantidade;
     }
 
     public Long getId() {
@@ -31,12 +30,5 @@ public class ItemPedido {
         this.item = item;
     }
 
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
-    }
 }
 
