@@ -24,7 +24,7 @@ public class UsuarioService {
         usuario.setTelefone(dto.telefone());
         usuario.setSenha(dto.senha());
 
-        emailService.enviarEmail(usuario.getEmail(), "Email Spring", "Parabéns " + usuario.getNome() + "! Voce se cadastrou e agr tem que dar o cu pra mim!");
+        //emailService.enviarEmail(usuario.getEmail(), "Cadastro", "Parabéns " + usuario.getNome() + "! Seu cadastro foi realizado com sucesso!");
 
         return repository.save(usuario);
     }

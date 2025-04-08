@@ -32,11 +32,8 @@ public class ValidationHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleDataIntegrityViolation(DataIntegrityViolationException e) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", "Violação de integridade de dados");
-        error.put("message", e.getLocalizedMessage());
-        return error;
+    public ValidationError handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        return new ValidationError(e.getMostSpecificCause().getMessage());
     }
 
 }
