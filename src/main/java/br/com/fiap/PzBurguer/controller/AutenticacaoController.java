@@ -2,6 +2,7 @@ package br.com.fiap.PzBurguer.controller;
 
 import br.com.fiap.PzBurguer.dto.CadastroDto;
 import br.com.fiap.PzBurguer.dto.LoginDto;
+import br.com.fiap.PzBurguer.exceptions.UnauthorizedException;
 import br.com.fiap.PzBurguer.model.Usuario;
 import br.com.fiap.PzBurguer.repository.CadastroRepository;
 import br.com.fiap.PzBurguer.service.UsuarioService;
@@ -31,18 +32,16 @@ public class AutenticacaoController {
     @PostMapping("/cadastro")
     public ResponseEntity<Usuario> create(@RequestBody @Valid CadastroDto dto) {
         log.info("Cadastrando o usuário: " + dto.email());
-        Usuario usuario = usuarioService.criarUsuario(dto);
+        Usuario usuario = usuarioService.cadastrarUsuario(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        log.info("Tentativa de login do usuário: " + loginDto.email());
-        Usuario usuario = repository.findByEmail(loginDto.email());
-
-        if (usuario == null || !usuario.getSenha().equals(loginDto.senha())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Email ou senha inválidos");
+        try {
+            usuarioService.login(loginDto);
+        } catch (UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
 
         return ResponseEntity.ok("usuario autorizado");
