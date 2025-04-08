@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/cadastro")
-public class CadastroController {
+@RequestMapping("/auth")
+public class AutenticacaoController {
 
     @Autowired
     private UsuarioService usuarioService;
@@ -28,7 +28,7 @@ public class CadastroController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @PostMapping
+    @PostMapping("/cadastro")
     public ResponseEntity<Usuario> create(@RequestBody @Valid CadastroDto dto) {
         log.info("Cadastrando o usuário: " + dto.email());
         Usuario usuario = usuarioService.criarUsuario(dto);
