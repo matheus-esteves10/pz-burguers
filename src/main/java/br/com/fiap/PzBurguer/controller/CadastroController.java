@@ -1,7 +1,9 @@
 package br.com.fiap.PzBurguer.controller;
 
 import br.com.fiap.PzBurguer.dto.CadastroDto;
+import br.com.fiap.PzBurguer.dto.LoginDto;
 import br.com.fiap.PzBurguer.model.Usuario;
+import br.com.fiap.PzBurguer.repository.CadastroRepository;
 import br.com.fiap.PzBurguer.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -21,6 +23,9 @@ public class CadastroController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private CadastroRepository repository;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @PostMapping
@@ -28,6 +33,19 @@ public class CadastroController {
         log.info("Cadastrando o usuário: " + dto.email());
         Usuario usuario = usuarioService.criarUsuario(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
+        log.info("Tentativa de login do usuário: " + loginDto.email());
+        Usuario usuario = repository.findByEmail(loginDto.email());
+
+        if (usuario == null || !usuario.getSenha().equals(loginDto.senha())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Email ou senha inválidos");
+        }
+
+        return ResponseEntity.ok("usuario autorizado");
     }
 }
 
