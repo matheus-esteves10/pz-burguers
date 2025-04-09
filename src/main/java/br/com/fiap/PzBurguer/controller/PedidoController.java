@@ -38,7 +38,7 @@ public class PedidoController {
 
     @GetMapping("/{id}")
     @Operation(
-            summary = "Exibir todos os pedidos por id",
+            summary = "Exibir pedido por id",
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "404")
@@ -53,7 +53,7 @@ public class PedidoController {
     @Operation(
             summary = "Criar pedido",
             responses = {
-                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "201"),
                     @ApiResponse(responseCode = "400")
             }
     )
