@@ -25,7 +25,6 @@ public class Pedido {
         this.valorTotal = BigDecimal.valueOf(calcularValorTotal(dto.itens()));
     }
 
-
     public Pedido() {
     }
 
@@ -69,7 +68,6 @@ public class Pedido {
         this.observacoes = observacoes;
     }
 
-
     public List<ItemPedido> getItens() {
         return itens;
     }
@@ -80,8 +78,7 @@ public class Pedido {
 
     private Double calcularValorTotal(List<ItemPedido> itens) {
         return itens.stream()
-                .mapToDouble(item -> item.getItem().getPrecoUnitario() * item.getItem().getQuantidade())
+                .mapToDouble(itemPedido -> itemPedido.getItem().getPrecoUnitario() * itemPedido.getQuantidade())
                 .sum();
     }
-
 }

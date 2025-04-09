@@ -6,7 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Builder;
 
-import java.math.BigDecimal;
 
 @Builder
 @Entity
@@ -16,16 +15,14 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    private int quantidade;
     private Double precoUnitario;
 
     public Item() {
     }
 
-    public Item(Long id, String nome, int quantidade, Double precoUnitario) {
+    public Item(Long id, String nome, Double precoUnitario) {
         this.id = id;
         this.nome = nome;
-        this.quantidade = quantidade;
         this.precoUnitario = precoUnitario;
     }
 
@@ -43,14 +40,6 @@ public class Item {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
     }
 
     public Double getPrecoUnitario() {
