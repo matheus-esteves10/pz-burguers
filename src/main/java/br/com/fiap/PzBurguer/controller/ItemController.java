@@ -5,6 +5,8 @@ import br.com.fiap.PzBurguer.model.Item;
 
 import br.com.fiap.PzBurguer.repository.ItemRepository;
 import br.com.fiap.PzBurguer.service.ItemService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,13 @@ public class ItemController {
 
     @PostMapping()
     @CacheEvict(value = "categories", allEntries = true)
+    @Operation(
+            summary = "Cadastrar item",
+            responses = {
+                    @ApiResponse(responseCode = "201"),
+                    @ApiResponse(responseCode = "404")
+            }
+    )
     public ResponseEntity<Item> create(@RequestBody @Valid ItemDto dto) {
         log.info("Cadastrando o item: " + dto.nome());
         Item item = service.cadastrarItem(dto);
@@ -39,6 +48,12 @@ public class ItemController {
 
     @GetMapping
     @Cacheable
+    @Operation(
+            summary = "Cadastrar usuário",
+            responses = {
+                    @ApiResponse(responseCode = "200")
+            }
+    )
     public List<Item> getItens(){
         return repository.findAll();
     }

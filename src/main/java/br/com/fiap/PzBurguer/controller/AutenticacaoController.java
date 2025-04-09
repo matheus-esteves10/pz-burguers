@@ -6,6 +6,8 @@ import br.com.fiap.PzBurguer.exceptions.UnauthorizedException;
 import br.com.fiap.PzBurguer.model.Usuario;
 import br.com.fiap.PzBurguer.repository.CadastroRepository;
 import br.com.fiap.PzBurguer.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +32,29 @@ public class AutenticacaoController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @PostMapping("/cadastro")
+    @Operation(
+            summary = "Cadastrar usuário",
+            responses = {
+                    @ApiResponse(responseCode = "201"),
+                    @ApiResponse(responseCode = "400"),
+                    @ApiResponse(responseCode = "409")
+            }
+    )
     public ResponseEntity<Usuario> create(@RequestBody @Valid CadastroDto dto) {
         log.info("Cadastrando o usuário: " + dto.email());
         Usuario usuario = usuarioService.cadastrarUsuario(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
     }
 
+
     @PostMapping("/login")
+    @Operation(
+            summary = "Cadastrar usuário",
+            responses = {
+                    @ApiResponse(responseCode = "201"),
+                    @ApiResponse(responseCode = "401")
+            }
+    )
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
         try {
             usuarioService.login(loginDto);

@@ -3,6 +3,9 @@ package br.com.fiap.PzBurguer.controller;
 import br.com.fiap.PzBurguer.dto.PedidoDto;
 import br.com.fiap.PzBurguer.model.Pedido;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,18 +26,38 @@ public class PedidoController {
     }
 
     @GetMapping
+    @Operation(
+            summary = "Exibir todos os pedidos",
+            responses = {
+                    @ApiResponse(responseCode = "200")
+            }
+    )
     public List<Pedido> index() {
         return repository.findAll();
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            summary = "Exibir todos os pedidos por id",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "404")
+            }
+    )
     public Pedido getPedidoById(@PathVariable Long id) {
         return repository.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Pedido> create(@RequestBody PedidoDto dto) {
+    @Operation(
+            summary = "Criar pedido",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "400")
+            }
+    )
+    public ResponseEntity<Pedido> create(@RequestBody @Valid PedidoDto dto) {
         log.info("Criando pedido de ID " + dto.idPedido());
         Pedido pedido = new Pedido(dto);
         Pedido created = repository.save(pedido);
@@ -43,13 +66,27 @@ public class PedidoController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(
+            summary = "Deletar pedido por id",
+            responses = {
+                    @ApiResponse(responseCode = "204"),
+                    @ApiResponse(responseCode = "404")
+            }
+    )
     public void destroy(@PathVariable Long id) {
         log.info("Apagando pedido de ID " + id);
         repository.delete(id);
     }
 
     @PutMapping("/{id}")
-    public Pedido update(@PathVariable Long id, @RequestBody PedidoDto dto) {
+    @Operation(
+            summary = "Editar pedido por id",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "404")
+            }
+    )
+    public Pedido update(@PathVariable Long id, @RequestBody @Valid PedidoDto dto) {
         log.info("Atualizando o pedido " + id);
         Pedido pedido = new Pedido(dto);
         return repository.update(id, pedido);
