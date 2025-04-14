@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -33,7 +35,8 @@ public class Usuario {
     @Size (min = 5, max = 255, message = "A senha deve ter entre 5 e 255 caracteres")
     private String senha;
 
-    //    private List<Pedido> pedidos; TODO: FUTURAMENTE DESCOMENTAR ESSA LINHA QUANDO A PARTE DE PEDIDOS POSSUIR UM DB
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pedido> pedidos;
 
     public Usuario() {
     }

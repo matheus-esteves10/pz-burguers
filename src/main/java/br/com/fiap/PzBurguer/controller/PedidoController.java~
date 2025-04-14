@@ -1,7 +1,6 @@
 package br.com.fiap.PzBurguer.controller;
 
 import br.com.fiap.PzBurguer.dto.PedidoDto;
-import br.com.fiap.PzBurguer.dto.responses.PedidosPendentesResponse;
 import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
 import br.com.fiap.PzBurguer.model.ItemPedido;
 import br.com.fiap.PzBurguer.model.Pedido;
@@ -38,9 +37,9 @@ public class PedidoController {
    }
 
     @GetMapping("/pendentes")
-    public ResponseEntity<List<PedidosPendentesResponse>> listarPedidosPendentes() {
-        List<PedidosPendentesResponse> pedidosPendentes = pedidoService.listarPedidosPendentes();
-        return ResponseEntity.ok(pedidosPendentes);
+    public ResponseEntity<List<ItemPedido>> listarItensDePedidosPendentes() {
+        List<ItemPedido> itensPendentes = ((List<ItemPedido>) pedidoService).listarPedidosPendentes();
+        return ResponseEntity.ok(itensPendentes);
     }
 
 }

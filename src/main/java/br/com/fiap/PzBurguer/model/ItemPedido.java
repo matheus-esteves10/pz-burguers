@@ -1,39 +1,32 @@
 package br.com.fiap.PzBurguer.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemPedido {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "item_id")
     private Item item;
+
     private int quantidade;
 
-    public ItemPedido() {}
-
-    public ItemPedido(Long id, Item item, int quantidade) {
-        this.id = id;
-        this.item = item;
-        this.quantidade = quantidade;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
-    }
+    @ManyToOne
+    @JoinColumn(name = "pedido_id", nullable = false)
+    private Pedido pedido;
 }
+
+
+
+
