@@ -47,7 +47,7 @@ public class ItemController {
     }
 
     @GetMapping
-    @Cacheable("itens")
+    @Cacheable
     @Operation(
             summary = "Cadastrar usuário",
             responses = {
