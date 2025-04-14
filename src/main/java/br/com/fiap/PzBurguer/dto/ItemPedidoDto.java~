@@ -1,6 +1,0 @@
-package br.com.fiap.PzBurguer.dto;
-public record ItemPedidoDto(
-        int quantidade,
-        Long idPedio
-) {}
-

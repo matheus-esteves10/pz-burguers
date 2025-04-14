@@ -38,6 +38,7 @@ public class PedidoController {
    }
 
     @GetMapping("/pendentes")
+    @Operation(summary = "Listar pedidos pendentes", responses = {@ApiResponse(responseCode = "200")})
     public ResponseEntity<List<PedidosPendentesResponse>> listarPedidosPendentes() {
         List<PedidosPendentesResponse> pedidosPendentes = pedidoService.listarPedidosPendentes();
         return ResponseEntity.ok(pedidosPendentes);

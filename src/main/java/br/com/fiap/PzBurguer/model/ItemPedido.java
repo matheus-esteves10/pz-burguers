@@ -25,6 +25,11 @@ public class ItemPedido {
     @ManyToOne
     @JoinColumn(name = "pedido_id", nullable = false)
     private Pedido pedido;
+
+    public ItemPedido(Item item, Integer quantidade) {
+        this.item = item;
+        this.quantidade = quantidade;
+    }
 }
 
 

@@ -11,6 +11,6 @@ public record PedidoDto (
                          String endereco,
                          String observacoes,
                          Usuario usuario,
-                         List<ItemPedido> itens
+                         List<ItemPedidoRequest> itens
                          ) {
 }

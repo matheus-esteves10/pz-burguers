@@ -7,6 +7,7 @@ import br.com.fiap.PzBurguer.model.ItemPedido;
 import br.com.fiap.PzBurguer.model.Pedido;
 import br.com.fiap.PzBurguer.model.StatusPedido;
 import br.com.fiap.PzBurguer.repository.ItemPedidoRepository;
+import br.com.fiap.PzBurguer.repository.ItemRepository;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +25,33 @@ public class PedidoService {
     @Autowired
     private ItemPedidoRepository itemPedidoRepository;
 
+    @Autowired
+    private ItemRepository itemRepository;
+
 
     public Pedido criarPedido(PedidoDto dto) {
-        Pedido pedido = new Pedido(dto);
+        List<ItemPedido> itens = dto.itens().stream().map(itemRequest -> {
+            Item item = itemRepository.findById(itemRequest.itemId())
+                    .orElseThrow(() -> new RuntimeException("Item não encontrado: " + itemRequest.itemId()));
+            return new ItemPedido(item, itemRequest.quantidade());
+        }).toList();
 
+        Pedido pedido = new Pedido(
+                dto.usuario(),
+                dto.statusPedido(),
+                dto.endereco(),
+                dto.observacoes(),
+                itens
+        );
 
-        for (ItemPedido item : pedido.getItens()) { //adicionando o id do pedido a tabela de relacionamento item_pedido
-            item.setPedido(pedido);
+        for (ItemPedido item : itens) {
+            item.setPedido(pedido); // relacionamento reverso
         }
 
         return pedidoRepository.save(pedido);
     }
+
+
 
     public List<PedidosPendentesResponse> listarPedidosPendentes() {
         List<Pedido> pedidos = pedidoRepository.findByStatus(StatusPedido.SOLICITADO);

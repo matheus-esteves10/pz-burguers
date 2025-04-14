@@ -27,14 +27,15 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens;
 
-    public Pedido(PedidoDto dto) {
-        this.usuario = dto.usuario();
-        this.status = dto.statusPedido() == null ? StatusPedido.SOLICITADO : dto.statusPedido();
-        this.enderecoEntrega = dto.endereco();
-        this.observacoes = dto.observacoes();
-        this.itens = dto.itens();
-        this.valorTotal = BigDecimal.valueOf(calcularValorTotal(dto.itens()));
+    public Pedido(Usuario usuario, StatusPedido status, String endereco, String observacoes, List<ItemPedido> itens) {
+        this.usuario = usuario;
+        this.status = status == null ? StatusPedido.SOLICITADO : status;
+        this.enderecoEntrega = endereco;
+        this.observacoes = observacoes;
+        this.itens = itens;
+        this.valorTotal = BigDecimal.valueOf(calcularValorTotal(itens));
     }
+
 
     public Pedido() {
     }
