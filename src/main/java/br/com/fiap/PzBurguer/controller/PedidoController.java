@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/pedido")
@@ -48,8 +49,7 @@ public class PedidoController {
 
     @DeleteMapping("/cancelar")
     public ResponseEntity<Pedido> cancelarPedido(@RequestBody PedidoCancelamentoDto dto) {
-        Pedido pedidoCancelado = pedidoService.alterarPedido(dto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido nao encontrado"));
+        Optional<Pedido> pedidoCancelado = pedidoService.alterarPedido(dto);
         return ResponseEntity.noContent().build();
     }
 

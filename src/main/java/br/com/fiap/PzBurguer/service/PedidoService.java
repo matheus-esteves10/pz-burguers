@@ -4,6 +4,7 @@ import br.com.fiap.PzBurguer.dto.PedidoCancelamentoDto;
 import br.com.fiap.PzBurguer.dto.PedidoDto;
 import br.com.fiap.PzBurguer.dto.responses.PedidosPendentesResponse;
 import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
+import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
 import br.com.fiap.PzBurguer.model.Item;
 import br.com.fiap.PzBurguer.model.ItemPedido;
 import br.com.fiap.PzBurguer.model.Pedido;
@@ -41,7 +42,7 @@ public class PedidoService {
 
         Pedido pedido = new Pedido(
                 dto.usuario(),
-                StatusPedido.SOLICITADO,
+                StatusPedido.EM_PREPARO,
                 dto.endereco(),
                 dto.observacoes(),
                 itens
@@ -76,10 +77,10 @@ public class PedidoService {
 
     public Optional<Pedido> alterarPedido(PedidoCancelamentoDto dto) {
         Pedido pedido = pedidoRepository.findById(dto.idPedido())
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new OrderNotFoundException("Pedido de id " + dto.idPedido() + " não encontrado"));
 
         if (pedido.getStatus() != StatusPedido.SOLICITADO) {
-            throw new InvalidCancelException("Pedido não pode ser cancelado");
+            throw new InvalidCancelException("Pedido com status diferente de SOLICITADO não pode ser cancelado");
         }
 
         pedido.setStatus(StatusPedido.CANCELADO);

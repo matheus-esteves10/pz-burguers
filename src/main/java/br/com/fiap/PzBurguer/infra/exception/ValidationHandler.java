@@ -1,5 +1,7 @@
 package br.com.fiap.PzBurguer.infra.exception;
 
+import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
+import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -36,6 +38,24 @@ public class ValidationHandler {
         Map<String, String> error = new HashMap<>();
         error.put("error", "Violação de integridade de dados");
         error.put("message", e.getLocalizedMessage());
+        return error;
+    }
+
+    @ExceptionHandler(InvalidCancelException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleInvalidCancel(InvalidCancelException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Pedido não pode ser cancelado");
+        error.put("message", e.getMessage());
+        return error;
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleOrderNotFound(OrderNotFoundException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Pedido nao encontrado");
+        error.put("message", e.getMessage());
         return error;
     }
 
