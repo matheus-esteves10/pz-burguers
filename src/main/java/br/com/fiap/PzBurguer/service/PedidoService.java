@@ -42,7 +42,7 @@ public class PedidoService {
 
         Pedido pedido = new Pedido(
                 dto.usuario(),
-                StatusPedido.EM_PREPARO,
+                StatusPedido.SOLICITADO,
                 dto.endereco(),
                 dto.observacoes(),
                 itens

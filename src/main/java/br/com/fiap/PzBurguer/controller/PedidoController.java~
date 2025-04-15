@@ -49,7 +49,7 @@ public class PedidoController {
 
     @DeleteMapping("/cancelar")
     public ResponseEntity<Pedido> cancelarPedido(@RequestBody PedidoCancelamentoDto dto) {
-        Optional<Pedido> pedidoCancelado = pedidoService.alterarPedido(dto);
+        Optional<Pedido> pedidoCancelado = pedidoService.cancelarPedido(dto);
         return ResponseEntity.noContent().build();
     }
 

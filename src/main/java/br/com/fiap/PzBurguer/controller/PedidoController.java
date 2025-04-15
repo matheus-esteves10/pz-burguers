@@ -33,7 +33,9 @@ public class PedidoController {
 
    @PostMapping
    @Transactional
-   @Operation(summary = "Cadastrar pedido", responses = {@ApiResponse(responseCode = "201")})
+   @Operation(summary = "Cadastrar pedido", responses = {@ApiResponse(responseCode = "201"),
+           @ApiResponse(responseCode = "404")
+   })
    public ResponseEntity<ResponsePedidoDto> create(@RequestBody @Valid PedidoDto dto) {
        log.info("Cadastrando o pedido: " + dto.usuario().getId());
        Pedido pedido = pedidoService.criarPedido(dto);
@@ -48,6 +50,10 @@ public class PedidoController {
     }
 
     @DeleteMapping("/cancelar")
+    @Operation(summary = "Cancelar pedido", responses = {@ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "404"),
+            @ApiResponse(responseCode = "400")
+    })
     public ResponseEntity<Pedido> cancelarPedido(@RequestBody PedidoCancelamentoDto dto) {
         Optional<Pedido> pedidoCancelado = pedidoService.cancelarPedido(dto);
         return ResponseEntity.noContent().build();
