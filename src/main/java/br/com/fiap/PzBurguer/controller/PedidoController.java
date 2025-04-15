@@ -4,8 +4,8 @@ import br.com.fiap.PzBurguer.dto.PedidoCancelamentoDto;
 import br.com.fiap.PzBurguer.dto.PedidoDto;
 import br.com.fiap.PzBurguer.dto.responses.PedidosPendentesResponse;
 import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
-import br.com.fiap.PzBurguer.model.ItemPedido;
 import br.com.fiap.PzBurguer.model.Pedido;
+import br.com.fiap.PzBurguer.repository.PedidoRepository;
 import br.com.fiap.PzBurguer.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,6 +30,9 @@ public class PedidoController {
 
    @Autowired
    private PedidoService pedidoService;
+
+   @Autowired
+   private PedidoRepository pedidoRepository;
 
    @PostMapping
    @Transactional
@@ -57,6 +60,19 @@ public class PedidoController {
     public ResponseEntity<Pedido> cancelarPedido(@RequestBody PedidoCancelamentoDto dto) {
         Optional<Pedido> pedidoCancelado = pedidoService.cancelarPedido(dto);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Listar pedido", responses = {@ApiResponse(responseCode = "200"),
+    @ApiResponse(responseCode = "404")
+    })
+    public ResponseEntity<ResponsePedidoDto> pedidoById(@PathVariable Long id) {
+        try {
+            Pedido pedido = pedidoRepository.findById(id).get();
+            return ResponseEntity.ok(new ResponsePedidoDto(pedido));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
 }
