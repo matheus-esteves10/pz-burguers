@@ -36,7 +36,7 @@ public class PedidoService {
     public Pedido criarPedido(PedidoDto dto) {
         List<ItemPedido> itens = dto.itens().stream().map(itemRequest -> {
             Item item = itemRepository.findById(itemRequest.itemId())
-                    .orElseThrow(() -> new RuntimeException("Item não encontrado: " + itemRequest.itemId()));
+                    .orElseThrow(() -> new OrderNotFoundException("Pedido de id " + itemRequest.itemId() + " não encontrado"));
             return new ItemPedido(item, itemRequest.quantidade());
         }).toList();
 
@@ -75,7 +75,7 @@ public class PedidoService {
         )).toList();
     }
 
-    public Optional<Pedido> alterarPedido(PedidoCancelamentoDto dto) {
+    public Optional<Pedido> cancelarPedido(PedidoCancelamentoDto dto) {
         Pedido pedido = pedidoRepository.findById(dto.idPedido())
                 .orElseThrow(() -> new OrderNotFoundException("Pedido de id " + dto.idPedido() + " não encontrado"));
 
