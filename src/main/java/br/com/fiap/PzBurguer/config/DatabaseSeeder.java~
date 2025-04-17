@@ -24,11 +24,7 @@ public class DatabaseSeeder {
                 Item.builder().nome("Paulista").precoUnitario(39.90).tipoItem(TipoItem.LANCHE).build(),
                 Item.builder().nome("Obelisco").precoUnitario(70.0).tipoItem(TipoItem.LANCHE).build(),
                 Item.builder().nome("Catupa Burguer").precoUnitario(44.90).tipoItem(TipoItem.LANCHE).build(),
-                Item.builder().nome("Paraíso").precoUnitario(52.90).tipoItem(TipoItem.LANCHE).build(),
-                Item.builder().nome("Coca Cola").precoUnitario(7.00).tipoItem(TipoItem.BEBIDA).build(),
-                Item.builder().nome("Guaraná").precoUnitario(7.00).tipoItem(TipoItem.BEBIDA).build(),
-                Item.builder().nome("Água sem gás").precoUnitario(4.00).tipoItem(TipoItem.BEBIDA).build()
-
+                Item.builder().nome("Paraíso").precoUnitario(52.90).tipoItem(TipoItem.LANCHE).build()
 
         );
         itemRepository.saveAll(itens);

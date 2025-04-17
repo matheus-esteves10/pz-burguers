@@ -56,12 +56,13 @@ public class ItemController {
                     @ApiResponse(responseCode = "200")
             }
     )
-    public Page<ItemDto> listarItens(
+    public Page<Item> listarItens(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) TipoItem tipoItem,
             Pageable pageable
     ) {
-        return itemService.listarItens(nome, tipoItem, pageable);
+        ItemFilter filtro = new ItemFilter(nome, tipoItem);
+        return itemService.getItensFiltrados(filtro, pageable);
     }
 
 

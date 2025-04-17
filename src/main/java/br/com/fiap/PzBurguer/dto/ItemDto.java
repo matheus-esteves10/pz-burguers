@@ -1,6 +1,9 @@
 package br.com.fiap.PzBurguer.dto;
 
+import br.com.fiap.PzBurguer.model.TipoItem;
+
 public record ItemDto(String nome,
-                      Double precoUnitario
-                     ) {
+                      Double precoUnitario,
+                      TipoItem tipoItem
+                      ) {
 }
