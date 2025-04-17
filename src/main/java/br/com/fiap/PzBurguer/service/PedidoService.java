@@ -3,6 +3,7 @@ package br.com.fiap.PzBurguer.service;
 import br.com.fiap.PzBurguer.dto.PedidoCancelamentoDto;
 import br.com.fiap.PzBurguer.dto.PedidoDto;
 import br.com.fiap.PzBurguer.dto.responses.PedidosPendentesResponse;
+import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
 import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
 import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
 import br.com.fiap.PzBurguer.model.Item;
@@ -14,8 +15,14 @@ import br.com.fiap.PzBurguer.repository.ItemRepository;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -86,6 +93,19 @@ public class PedidoService {
         pedido.setStatus(StatusPedido.CANCELADO);
         return Optional.of(pedidoRepository.save(pedido));
     }
+
+    public Page<ResponsePedidoDto> listarPedidosPorPeriodo(LocalDate dataInicio, LocalDate dataFim, Pageable pageable) {
+        Specification<Pedido> spec = Specification.where((root, query, cb) ->
+                cb.between(root.get("dataPedido"),
+                        dataInicio.atStartOfDay(),
+                        dataFim.atTime(LocalTime.MAX))
+        );
+
+        return pedidoRepository.findAll(spec, pageable)
+                .map(ResponsePedidoDto::new);
+    }
+
+
 
 
 

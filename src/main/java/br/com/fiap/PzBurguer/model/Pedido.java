@@ -2,6 +2,7 @@ package br.com.fiap.PzBurguer.model;
 
 import br.com.fiap.PzBurguer.dto.PedidoDto;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+
 public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
