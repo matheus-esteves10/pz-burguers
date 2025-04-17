@@ -21,7 +21,7 @@ public class Pedido {
     private StatusPedido status;
     private String enderecoEntrega;
     private String observacoes;
-    private LocalDateTime dataPedido;
+    private LocalDateTime dataCriacao;
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
@@ -36,7 +36,7 @@ public class Pedido {
         this.observacoes = observacoes;
         this.itens = itens;
         this.valorTotal = BigDecimal.valueOf(calcularValorTotal(itens));
-        this.dataPedido = LocalDateTime.now();
+        this.dataCriacao = LocalDateTime.now();
     }
 
 

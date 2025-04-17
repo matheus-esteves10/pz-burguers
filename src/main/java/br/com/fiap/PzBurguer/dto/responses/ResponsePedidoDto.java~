@@ -1,7 +1,6 @@
 package br.com.fiap.PzBurguer.dto.responses;
 
 import br.com.fiap.PzBurguer.model.Pedido;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,7 +12,7 @@ public record ResponsePedidoDto(
         String status,
         String enderecoEntrega,
         String observacoes,
-        @JsonFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime dataPedido,
+        LocalDateTime dataPedido,
         BigDecimal valorTotal,
         Map<String, Integer> itens
 ) {
