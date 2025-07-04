@@ -2,8 +2,10 @@ package br.com.fiap.PzBurguer.infra.exception;
 
 import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
 import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
+import br.com.fiap.PzBurguer.exceptions.UsuarioNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,6 +58,24 @@ public class ValidationHandler {
         Map<String, String> error = new HashMap<>();
         error.put("error", "Pedido nao encontrado");
         error.put("message", e.getMessage());
+        return error;
+    }
+
+    @ExceptionHandler(UsuarioNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleUserNotFound(UsuarioNotFoundException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getClass().getSimpleName());
+        error.put("message", e.getMessage());
+        return error;
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> invalidCredentials(BadCredentialsException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getClass().getSimpleName());
+        error.put("message", "Senha inválida");
         return error;
     }
 
