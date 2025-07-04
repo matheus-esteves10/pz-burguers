@@ -1,5 +1,6 @@
 package br.com.fiap.PzBurguer.config;
 
+import br.com.fiap.PzBurguer.model.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,8 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/user").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/item").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/item").hasRole(String.valueOf(UserRole.RESTAURANTE))
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)

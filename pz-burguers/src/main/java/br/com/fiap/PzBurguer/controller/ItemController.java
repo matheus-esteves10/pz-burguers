@@ -28,9 +28,6 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    @Autowired
-    private ItemRepository repository;
-
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @PostMapping()
