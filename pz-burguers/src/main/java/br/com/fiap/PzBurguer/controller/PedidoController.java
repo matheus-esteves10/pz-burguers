@@ -5,6 +5,7 @@ import br.com.fiap.PzBurguer.dto.PedidoDto;
 import br.com.fiap.PzBurguer.dto.responses.PedidosPendentesResponse;
 import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
 import br.com.fiap.PzBurguer.model.Pedido;
+import br.com.fiap.PzBurguer.model.Usuario;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
 import br.com.fiap.PzBurguer.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -44,12 +46,13 @@ public class PedidoController {
            @ApiResponse(responseCode = "404")
    })
    public ResponseEntity<ResponsePedidoDto> create(@RequestBody @Valid PedidoDto dto) {
-       log.info("Cadastrando o pedido: " + dto.usuario().getId());
-       Pedido pedido = pedidoService.criarPedido(dto);
+       Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       Pedido pedido = pedidoService.criarPedido(dto, usuario);
+       log.info("Cadastrando o pedido");
        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponsePedidoDto(pedido));
    }
 
-    @GetMapping("/pendentes")
+    @GetMapping("/restaurante/pendentes")
     @Operation(summary = "Listar pedidos pendentes", responses = {@ApiResponse(responseCode = "200")})
     public ResponseEntity<List<PedidosPendentesResponse>> listarPedidosPendentes() {
         List<PedidosPendentesResponse> pedidosPendentes = pedidoService.listarPedidosPendentes();
@@ -66,7 +69,7 @@ public class PedidoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/restaurante/{id}")
     @Operation(summary = "Listar pedido", responses = {@ApiResponse(responseCode = "200"),
     @ApiResponse(responseCode = "404")
     })
@@ -79,7 +82,7 @@ public class PedidoController {
         }
     }
 
-    @GetMapping("/periodo")
+    @GetMapping("/restaurante/periodo")
     public Page<ResponsePedidoDto> listarPedidosPorPeriodo(
             @RequestParam("dataInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
             @RequestParam("dataFim") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim,

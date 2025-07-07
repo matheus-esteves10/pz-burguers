@@ -15,7 +15,8 @@ public record ResponsePedidoDto(
         String observacoes,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime dataPedido,
         BigDecimal valorTotal,
-        Map<String, Integer> itens
+        Map<String, Integer> itens,
+        String nomeUser
 ) {
     public ResponsePedidoDto(Pedido pedido) {
         this(
@@ -29,7 +30,8 @@ public record ResponsePedidoDto(
                         .collect(Collectors.toMap(
                                 item -> item.getItem().getNome(),
                                 item -> item.getQuantidade()
-                        ))
+                        )),
+                pedido.getUsuario().getNome()
         );
     }
 }

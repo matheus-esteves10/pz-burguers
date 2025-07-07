@@ -11,7 +11,6 @@ public record PedidoDto (
                          StatusPedido statusPedido,
                          String endereco,
                          String observacoes,
-                         Usuario usuario,
                          LocalDateTime dataPedido,
                          List<ItemPedidoRequest> itens
                          ) {

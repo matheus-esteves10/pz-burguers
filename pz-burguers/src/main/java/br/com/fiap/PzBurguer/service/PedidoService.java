@@ -6,10 +6,7 @@ import br.com.fiap.PzBurguer.dto.responses.PedidosPendentesResponse;
 import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
 import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
 import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
-import br.com.fiap.PzBurguer.model.Item;
-import br.com.fiap.PzBurguer.model.ItemPedido;
-import br.com.fiap.PzBurguer.model.Pedido;
-import br.com.fiap.PzBurguer.model.StatusPedido;
+import br.com.fiap.PzBurguer.model.*;
 import br.com.fiap.PzBurguer.repository.ItemPedidoRepository;
 import br.com.fiap.PzBurguer.repository.ItemRepository;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
@@ -40,20 +37,23 @@ public class PedidoService {
     private ItemRepository itemRepository;
 
 
-    public Pedido criarPedido(PedidoDto dto) {
+    @Transactional
+    public Pedido criarPedido(PedidoDto dto, Usuario usuario) {
         List<ItemPedido> itens = dto.itens().stream().map(itemRequest -> {
             Item item = itemRepository.findById(itemRequest.itemId())
                     .orElseThrow(() -> new OrderNotFoundException("Pedido de id " + itemRequest.itemId() + " não encontrado"));
             return new ItemPedido(item, itemRequest.quantidade());
         }).toList();
 
-        Pedido pedido = new Pedido(
-                dto.usuario(),
-                StatusPedido.SOLICITADO,
-                dto.endereco(),
-                dto.observacoes(),
-                itens
-        );
+        Pedido pedido = new Pedido();
+        pedido.setStatus(StatusPedido.SOLICITADO);
+        pedido.setEnderecoEntrega(dto.endereco());
+        pedido.setObservacoes(dto.observacoes());
+        pedido.setItens(itens);
+        pedido.setUsuario(usuario);
+        pedido.setDataPedido(LocalDateTime.now());
+        pedido.setValorTotal(Pedido.calcularValorTotal(itens));
+
 
         for (ItemPedido item : itens) {
             item.setPedido(pedido); // relacionamento reverso

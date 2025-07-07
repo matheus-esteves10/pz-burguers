@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/item").permitAll()
                         .requestMatchers(HttpMethod.POST, "/item").hasRole(String.valueOf(UserRole.RESTAURANTE))
+                        .requestMatchers(HttpMethod.POST, "/pedido/restaurante/**").hasRole(String.valueOf(UserRole.RESTAURANTE))
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)

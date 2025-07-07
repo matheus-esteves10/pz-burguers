@@ -1,8 +1,6 @@
 package br.com.fiap.PzBurguer.model;
 
-import br.com.fiap.PzBurguer.dto.PedidoDto;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,7 +35,6 @@ public class Pedido {
         this.enderecoEntrega = endereco;
         this.observacoes = observacoes;
         this.itens = itens;
-        this.valorTotal = BigDecimal.valueOf(calcularValorTotal(itens));
         this.dataPedido = LocalDateTime.now();
     }
 
@@ -45,9 +42,9 @@ public class Pedido {
     public Pedido() {
     }
 
-    private Double calcularValorTotal(List<ItemPedido> itens) {
-        return itens.stream()
+    public static BigDecimal calcularValorTotal(List<ItemPedido> itens) {
+        return BigDecimal.valueOf(itens.stream()
                 .mapToDouble(itemPedido -> itemPedido.getItem().getPrecoUnitario() * itemPedido.getQuantidade())
-                .sum();
+                .sum());
     }
 }
