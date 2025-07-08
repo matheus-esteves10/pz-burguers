@@ -1,8 +1,6 @@
 package br.com.fiap.PzBurguer.dto;
 
-import br.com.fiap.PzBurguer.model.ItemPedido;
-import br.com.fiap.PzBurguer.model.StatusPedido;
-import br.com.fiap.PzBurguer.model.Usuario;
+import br.com.fiap.PzBurguer.model.enums.StatusPedido;
 
 import java.time.LocalDateTime;
 import java.util.List;

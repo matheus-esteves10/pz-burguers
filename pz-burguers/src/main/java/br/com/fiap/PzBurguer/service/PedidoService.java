@@ -7,14 +7,14 @@ import br.com.fiap.PzBurguer.dto.result.Result;
 import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
 import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
 import br.com.fiap.PzBurguer.model.*;
+import br.com.fiap.PzBurguer.model.enums.StatusPagamento;
+import br.com.fiap.PzBurguer.model.enums.StatusPedido;
 import br.com.fiap.PzBurguer.model.enums.UserRole;
 import br.com.fiap.PzBurguer.producer.PagamentoProducer;
 import br.com.fiap.PzBurguer.repository.ItemRepository;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
 import br.com.fiap.PzBurguer.service.utilities.MensageriaUtilities;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,9 +42,6 @@ public class PedidoService {
     @Autowired
     private PagamentoProducer pagamentoProducer;
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-
     @Transactional
     public Result<Pedido> criarPedido(PedidoDto dto, Usuario usuario) {
         List<ItemPedido> itens = dto.itens().stream().map(itemRequest -> {
@@ -55,6 +52,7 @@ public class PedidoService {
 
         Pedido pedido = new Pedido();
         pedido.setStatus(StatusPedido.SOLICITADO);
+        pedido.setStatusPagamento(StatusPagamento.PENDENTE);
         pedido.setEnderecoEntrega(dto.endereco());
         pedido.setObservacoes(dto.observacoes());
         pedido.setItens(itens);

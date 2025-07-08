@@ -1,7 +1,9 @@
 package br.com.fiap.PzBurguer.dto.responses;
 
+import br.com.fiap.PzBurguer.model.ItemPedido;
 import br.com.fiap.PzBurguer.model.Pedido;
 import br.com.fiap.PzBurguer.model.Usuario;
+import br.com.fiap.PzBurguer.model.enums.StatusPagamento;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 public record ResponsePedidoDto(
         Long id,
         String status,
+        StatusPagamento statusPagamento,
         String enderecoEntrega,
         String observacoes,
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime dataPedido,
@@ -24,6 +27,7 @@ public record ResponsePedidoDto(
         return new ResponsePedidoDto(
                 pedido.getId(),
                 pedido.getStatus().name(),
+                pedido.getStatusPagamento(),
                 pedido.getEnderecoEntrega(),
                 pedido.getObservacoes(),
                 pedido.getDataPedido(),
@@ -31,7 +35,7 @@ public record ResponsePedidoDto(
                 pedido.getItens().stream()
                         .collect(Collectors.toMap(
                                 item -> item.getItem().getNome(),
-                                item -> item.getQuantidade()
+                                ItemPedido::getQuantidade
                         )),
                 pedido.getUsuario().getNome()
         );

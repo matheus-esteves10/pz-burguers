@@ -1,4 +1,4 @@
-package br.com.fiap.PzBurguer.model;
+package br.com.fiap.PzBurguer.model.enums;
 
 public enum StatusPedido {
     ENTREGUE,

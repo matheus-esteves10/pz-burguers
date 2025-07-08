@@ -23,7 +23,6 @@ public class UsuarioService {
     private UsuarioProducer usuarioProducer;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public Result<Usuario> cadastrarUsuario(CadastroDto dto) {
         Usuario usuario = new Usuario();

@@ -1,5 +1,7 @@
 package br.com.fiap.PzBurguer.model;
 
+import br.com.fiap.PzBurguer.model.enums.StatusPagamento;
+import br.com.fiap.PzBurguer.model.enums.StatusPedido;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,22 +24,13 @@ public class Pedido {
     private String enderecoEntrega;
     private String observacoes;
     private LocalDateTime dataPedido;
+    private StatusPagamento statusPagamento;
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens;
-
-    public Pedido(Long id,Usuario usuario, StatusPedido status, String endereco, String observacoes, List<ItemPedido> itens) {
-        this.id = id;
-        this.usuario = usuario;
-        this.status = status == null ? StatusPedido.SOLICITADO : status;
-        this.enderecoEntrega = endereco;
-        this.observacoes = observacoes;
-        this.itens = itens;
-        this.dataPedido = LocalDateTime.now();
-    }
 
 
     public Pedido() {
