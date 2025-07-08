@@ -7,6 +7,7 @@ import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
 import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
 import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
 import br.com.fiap.PzBurguer.model.*;
+import br.com.fiap.PzBurguer.model.enums.UserRole;
 import br.com.fiap.PzBurguer.repository.ItemPedidoRepository;
 import br.com.fiap.PzBurguer.repository.ItemRepository;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -82,13 +84,17 @@ public class PedidoService {
         )).toList();
     }
 
-    public Optional<Pedido> cancelarPedido(PedidoCancelamentoDto dto) {
-        Pedido pedido = pedidoRepository.findById(dto.idPedido())
-                .orElseThrow(() -> new OrderNotFoundException("Pedido de id " + dto.idPedido() + " não encontrado"));
+    public Optional<Pedido> cancelarPedido(Long idPedido, Usuario usuario) {
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new OrderNotFoundException("Pedido de id " + idPedido + " não encontrado"));
 
         if (pedido.getStatus() != StatusPedido.SOLICITADO) {
             throw new InvalidCancelException("Pedido com status diferente de SOLICITADO não pode ser cancelado");
         }
+
+        checaPedido(pedido.getUsuario().getId(), usuario);
+
+
 
         pedido.setStatus(StatusPedido.CANCELADO);
         return Optional.of(pedidoRepository.save(pedido));
@@ -105,11 +111,13 @@ public class PedidoService {
                 .map(ResponsePedidoDto::new);
     }
 
-
-
-
-
-
-
+    private void checaPedido(Long idUserPedido, Usuario usuario) {
+        if (usuario.getRole() == UserRole.RESTAURANTE){
+            return;
+        }
+        if (!Objects.equals(idUserPedido, usuario.getId())){
+            throw new InvalidCancelException("O usuário que quer cancelar o pedido deve ser o mesmo que realizou o mesmo");
+        }
+    }
 
 }

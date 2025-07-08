@@ -1,6 +1,7 @@
 package br.com.fiap.PzBurguer.infra.exception;
 
 import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
+import br.com.fiap.PzBurguer.exceptions.MensageriaException;
 import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
 import br.com.fiap.PzBurguer.exceptions.UsuarioNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;

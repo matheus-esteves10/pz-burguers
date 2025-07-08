@@ -59,13 +59,14 @@ public class PedidoController {
         return ResponseEntity.ok(pedidosPendentes);
     }
 
-    @DeleteMapping("/cancelar")
+    @DeleteMapping("/cancelar/{idPedido}")
     @Operation(summary = "Cancelar pedido", responses = {@ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "404"),
             @ApiResponse(responseCode = "400")
     })
-    public ResponseEntity<Pedido> cancelarPedido(@RequestBody PedidoCancelamentoDto dto) {
-        Optional<Pedido> pedidoCancelado = pedidoService.cancelarPedido(dto);
+    public ResponseEntity<Pedido> cancelarPedido(@PathVariable Long idPedido) {
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Pedido> pedidoCancelado = pedidoService.cancelarPedido(idPedido, usuario);
         return ResponseEntity.noContent().build();
     }
 
