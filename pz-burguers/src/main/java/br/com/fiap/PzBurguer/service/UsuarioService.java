@@ -1,7 +1,8 @@
 package br.com.fiap.PzBurguer.service;
 
 import br.com.fiap.PzBurguer.dto.CadastroDto;
-import br.com.fiap.PzBurguer.dto.result.UsuarioCadastroResult;
+import br.com.fiap.PzBurguer.dto.result.Result;
+
 import br.com.fiap.PzBurguer.exceptions.MensageriaException;
 import br.com.fiap.PzBurguer.model.Usuario;
 import br.com.fiap.PzBurguer.model.enums.UserRole;
@@ -25,7 +26,7 @@ public class UsuarioService {
     private PasswordEncoder passwordEncoder;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public UsuarioCadastroResult cadastrarUsuario(CadastroDto dto) {
+    public Result<Usuario> cadastrarUsuario(CadastroDto dto) {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
         usuario.setEmail(dto.email());
@@ -40,10 +41,10 @@ public class UsuarioService {
             usuarioProducer.publishMessage(usuario);
         } catch (Exception e) {
             exception = new MensageriaException();
-            log.warn("Falha ao enviar mensagem para RabbitMQ. Cadastro seguirá normalmente.", e);
+            log.warn("Falha ao enviar mensagem para RabbitMQ. Cadastro seguirá normalmente.");
         }
 
-        return new UsuarioCadastroResult(usuario, exception);
+        return new Result<>(usuario, exception);
     }
 
 
