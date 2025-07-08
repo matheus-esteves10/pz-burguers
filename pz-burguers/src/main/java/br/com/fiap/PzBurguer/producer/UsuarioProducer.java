@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UsuarioProducer {
+public class UsuarioProducer implements IProducer<Usuario> {
 
     private final RabbitTemplate rabbitTemplate;
 
@@ -19,6 +19,7 @@ public class UsuarioProducer {
     @Value(value = "${broker.queue.email.name}")
     private String routingKey; //nome da fila deve ser o igual a routing key quando utilizamos o exchange padrão ("")
 
+    @Override
     public void publishMessage(Usuario usuario) {
         var emailDto = new EmailDto();
         emailDto.setUserId(usuario.getId());
@@ -28,4 +29,7 @@ public class UsuarioProducer {
 
         rabbitTemplate.convertAndSend("", routingKey, emailDto);
     }
+
+
+
 }

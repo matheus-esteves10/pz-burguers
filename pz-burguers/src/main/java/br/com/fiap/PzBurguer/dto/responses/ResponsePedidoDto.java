@@ -1,6 +1,7 @@
 package br.com.fiap.PzBurguer.dto.responses;
 
 import br.com.fiap.PzBurguer.model.Pedido;
+import br.com.fiap.PzBurguer.model.Usuario;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
@@ -18,8 +19,9 @@ public record ResponsePedidoDto(
         Map<String, Integer> itens,
         String nomeUser
 ) {
-    public ResponsePedidoDto(Pedido pedido) {
-        this(
+
+    public static ResponsePedidoDto from(Pedido pedido) {
+        return new ResponsePedidoDto(
                 pedido.getId(),
                 pedido.getStatus().name(),
                 pedido.getEnderecoEntrega(),
@@ -34,6 +36,7 @@ public record ResponsePedidoDto(
                 pedido.getUsuario().getNome()
         );
     }
+
 }
 
 

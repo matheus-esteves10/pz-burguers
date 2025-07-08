@@ -2,12 +2,11 @@ package br.com.fiap.PzBurguer.service;
 
 import br.com.fiap.PzBurguer.dto.CadastroDto;
 import br.com.fiap.PzBurguer.dto.result.Result;
-
-import br.com.fiap.PzBurguer.exceptions.MensageriaException;
 import br.com.fiap.PzBurguer.model.Usuario;
 import br.com.fiap.PzBurguer.model.enums.UserRole;
 import br.com.fiap.PzBurguer.producer.UsuarioProducer;
 import br.com.fiap.PzBurguer.repository.UsuarioRepository;
+import br.com.fiap.PzBurguer.service.utilities.MensageriaUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +35,7 @@ public class UsuarioService {
 
         repository.save(usuario);
 
-        Exception exception = null;
-        try {
-            usuarioProducer.publishMessage(usuario);
-        } catch (Exception e) {
-            exception = new MensageriaException();
-            log.warn("Falha ao enviar mensagem para RabbitMQ. Cadastro seguirá normalmente.");
-        }
-
-        return new Result<>(usuario, exception);
+        return MensageriaUtilities.enviarMensagemComFallback(usuarioProducer, usuario);
     }
 
 

@@ -1,9 +1,9 @@
 package br.com.fiap.PzBurguer.controller;
 
-import br.com.fiap.PzBurguer.dto.PedidoCancelamentoDto;
 import br.com.fiap.PzBurguer.dto.PedidoDto;
 import br.com.fiap.PzBurguer.dto.responses.PedidosPendentesResponse;
 import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
+import br.com.fiap.PzBurguer.dto.result.Result;
 import br.com.fiap.PzBurguer.model.Pedido;
 import br.com.fiap.PzBurguer.model.Usuario;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
@@ -47,9 +47,10 @@ public class PedidoController {
    })
    public ResponseEntity<ResponsePedidoDto> create(@RequestBody @Valid PedidoDto dto) {
        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-       Pedido pedido = pedidoService.criarPedido(dto, usuario);
+       Result<Pedido> result = pedidoService.criarPedido(dto, usuario);
        log.info("Cadastrando o pedido");
-       return ResponseEntity.status(HttpStatus.CREATED).body(new ResponsePedidoDto(pedido));
+
+       return ResponseEntity.status(HttpStatus.CREATED).body(ResponsePedidoDto.from(result.objeto()));
    }
 
     @GetMapping("/restaurante/pendentes")
@@ -77,7 +78,7 @@ public class PedidoController {
     public ResponseEntity<ResponsePedidoDto> pedidoById(@PathVariable Long id) {
         try {
             Pedido pedido = pedidoRepository.findById(id).get();
-            return ResponseEntity.ok(new ResponsePedidoDto(pedido));
+            return ResponseEntity.ok(ResponsePedidoDto.from(pedido));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

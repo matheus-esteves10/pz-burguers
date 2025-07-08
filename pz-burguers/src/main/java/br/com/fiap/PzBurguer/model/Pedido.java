@@ -29,7 +29,8 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens;
 
-    public Pedido(Usuario usuario, StatusPedido status, String endereco, String observacoes, List<ItemPedido> itens) {
+    public Pedido(Long id,Usuario usuario, StatusPedido status, String endereco, String observacoes, List<ItemPedido> itens) {
+        this.id = id;
         this.usuario = usuario;
         this.status = status == null ? StatusPedido.SOLICITADO : status;
         this.enderecoEntrega = endereco;

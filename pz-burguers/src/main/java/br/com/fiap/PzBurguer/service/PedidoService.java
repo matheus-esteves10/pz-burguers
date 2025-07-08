@@ -1,17 +1,20 @@
 package br.com.fiap.PzBurguer.service;
 
-import br.com.fiap.PzBurguer.dto.PedidoCancelamentoDto;
 import br.com.fiap.PzBurguer.dto.PedidoDto;
 import br.com.fiap.PzBurguer.dto.responses.PedidosPendentesResponse;
 import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
+import br.com.fiap.PzBurguer.dto.result.Result;
 import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
 import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
 import br.com.fiap.PzBurguer.model.*;
 import br.com.fiap.PzBurguer.model.enums.UserRole;
-import br.com.fiap.PzBurguer.repository.ItemPedidoRepository;
+import br.com.fiap.PzBurguer.producer.PagamentoProducer;
 import br.com.fiap.PzBurguer.repository.ItemRepository;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
+import br.com.fiap.PzBurguer.service.utilities.MensageriaUtilities;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,15 +35,18 @@ public class PedidoService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
-    @Autowired
-    private ItemPedidoRepository itemPedidoRepository;
 
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private PagamentoProducer pagamentoProducer;
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
 
     @Transactional
-    public Pedido criarPedido(PedidoDto dto, Usuario usuario) {
+    public Result<Pedido> criarPedido(PedidoDto dto, Usuario usuario) {
         List<ItemPedido> itens = dto.itens().stream().map(itemRequest -> {
             Item item = itemRepository.findById(itemRequest.itemId())
                     .orElseThrow(() -> new OrderNotFoundException("Pedido de id " + itemRequest.itemId() + " não encontrado"));
@@ -61,7 +67,9 @@ public class PedidoService {
             item.setPedido(pedido); // relacionamento reverso
         }
 
-        return pedidoRepository.save(pedido);
+        pedidoRepository.save(pedido);
+
+        return MensageriaUtilities.enviarMensagemComFallback(pagamentoProducer, pedido);
     }
 
 
@@ -108,7 +116,7 @@ public class PedidoService {
         );
 
         return pedidoRepository.findAll(spec, pageable)
-                .map(ResponsePedidoDto::new);
+                .map(ResponsePedidoDto::from);
     }
 
     private void checaPedido(Long idUserPedido, Usuario usuario) {
