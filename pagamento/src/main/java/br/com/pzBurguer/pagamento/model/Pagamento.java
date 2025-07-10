@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pagamento {
-    private Long idUser;
+    private Long idPedido;
     private BigDecimal valorTotal;
     private StatusPagamento statusPagamento;
 }

@@ -26,6 +26,6 @@ public class ContaRepository {
     }
 
     public void atualizar(Conta conta) {
-        contas.put(conta.getIdClient(), conta);
+        contas.put(conta.getIdPedido(), conta);
     }
 }

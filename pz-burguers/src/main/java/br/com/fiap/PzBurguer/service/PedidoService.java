@@ -126,4 +126,17 @@ public class PedidoService {
         }
     }
 
+    public void atualizarStatusPagamento(Long idPedido, StatusPagamento status) {
+
+        Optional<Pedido> pedidoOpt = pedidoRepository.findById(idPedido);
+        if (pedidoOpt.isPresent()) {
+            Pedido pedido = pedidoOpt.get();
+            pedido.setStatusPagamento(status);
+            pedidoRepository.save(pedido);
+
+            System.out.println("🔄 Status do pedido " + idPedido + " atualizado para " + status);
+        } else {
+            System.out.println("❌ Pedido com ID " + idPedido + " não encontrado para atualizar status.");
+        }
+    }
 }

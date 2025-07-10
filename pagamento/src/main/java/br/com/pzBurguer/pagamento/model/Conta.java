@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Conta {
-    private Long idClient;
+    private Long idPedido;
     private BigDecimal saldo;
 }
 

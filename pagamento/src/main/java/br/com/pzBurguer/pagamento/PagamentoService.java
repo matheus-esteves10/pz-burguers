@@ -9,7 +9,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -18,8 +17,8 @@ public class PagamentoService {
     private final RabbitTemplate rabbitTemplate;
     private final ContaRepository contaRepository;
 
-//    @Value("${broker.queue.payment.response}")
-//    private String paymentResponseQueue;
+    @Value("${broker.queue.payment.response}")
+    private String routingKey;
 
     public PagamentoService(RabbitTemplate rabbitTemplate, ContaRepository contaRepository) {
         this.rabbitTemplate = rabbitTemplate;
@@ -27,21 +26,21 @@ public class PagamentoService {
     }
 
     public void sendPayment(Pagamento pagamento) {
-        System.out.println("➡️ Tentando processar pagamento do pedido: " + pagamento.getIdUser());
+        System.out.println("➡️ Tentando processar pagamento do pedido: " + pagamento.getIdPedido());
 
         StatusPagamento status = processarPagamento(pagamento);
 
         System.out.println("Status do pagamento: " + status);
 
-        //enviarStatusResposta(pagamento.getIdUser(), status);
+        enviarStatusResposta(pagamento.getIdPedido(), status);
     }
 
     // Responsável por processar o pagamento (verificar saldo, descontar, retornar status)
     private StatusPagamento processarPagamento(Pagamento pagamento) {
-        Optional<Conta> contaOptional = contaRepository.findById(pagamento.getIdUser());
+        Optional<Conta> contaOptional = contaRepository.findById(pagamento.getIdPedido());
 
         if (contaOptional.isEmpty()) {
-            System.out.println("❌ Conta não encontrada para ID " + pagamento.getIdUser());
+            System.out.println("❌ Conta não encontrada para ID " + pagamento.getIdPedido());
             return StatusPagamento.ERRO;
         }
 
@@ -59,10 +58,11 @@ public class PagamentoService {
     }
 
     // Responsável por enviar a mensagem com o status do pagamento para a fila
-//    private void enviarStatusResposta(Long idPedido, StatusPagamento status) {
-//        PagamentoStatusDto statusDto = new PagamentoStatusDto(idPedido, status);
-//        rabbitTemplate.convertAndSend(paymentResponseQueue, statusDto);
-//        System.out.println("📤 Status de pagamento enviado para fila: " + status);
-//    }
+    private void enviarStatusResposta(Long idPedido, StatusPagamento status) {
+        PagamentoStatusDto statusDto = new PagamentoStatusDto(idPedido, status);
+
+        rabbitTemplate.convertAndSend("", routingKey, statusDto);
+
+    }
 }
 
