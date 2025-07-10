@@ -23,7 +23,7 @@ public class PagamentoProducer implements IProducer<Pedido>{
     public void publishMessage(Pedido message) {
         var pagamentoDto = new PagamentoDto();
 
-        pagamentoDto.setIdPedido(message.getId());
+            pagamentoDto.setIdUser(message.getUsuario().getId());
         pagamentoDto.setValorTotal(message.getValorTotal());
 
         rabbitTemplate.convertAndSend("", routingKey, pagamentoDto);
