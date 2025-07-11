@@ -42,6 +42,9 @@ public class PedidoService {
     @Autowired
     private PagamentoProducer pagamentoProducer;
 
+    @Autowired
+    private NotaFiscalService notaFiscalService;
+
     @Transactional
     public Result<Pedido> criarPedido(PedidoDto dto, Usuario usuario) {
         List<ItemPedido> itens = dto.itens().stream().map(itemRequest -> {
@@ -128,13 +131,17 @@ public class PedidoService {
 
     public void atualizarStatusPagamento(Long idPedido, StatusPagamento status) {
 
-        Optional<Pedido> pedidoOpt = pedidoRepository.findById(idPedido);
+        Optional<Pedido> pedidoOpt = pedidoRepository.findByIdComItens(idPedido);
         if (pedidoOpt.isPresent()) {
             Pedido pedido = pedidoOpt.get();
             pedido.setStatusPagamento(status);
             pedidoRepository.save(pedido);
 
             System.out.println("🔄 Status do pedido " + idPedido + " atualizado para " + status);
+
+            if (status == StatusPagamento.PAGO) {
+                notaFiscalService.gerarComprovante(pedido);
+            }
         } else {
             System.out.println("❌ Pedido com ID " + idPedido + " não encontrado para atualizar status.");
         }
