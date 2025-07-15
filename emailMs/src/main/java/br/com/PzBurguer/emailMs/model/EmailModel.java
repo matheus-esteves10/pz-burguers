@@ -19,4 +19,8 @@ public class EmailModel {
     private String subject;
 
     private String text;
+
+    private String nomeArquivo;
+
+    private byte[] anexo;
 }

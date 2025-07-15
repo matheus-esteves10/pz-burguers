@@ -1,5 +1,6 @@
 package br.com.PzBurguer.emailMs.consumer;
 
+import br.com.PzBurguer.emailMs.dto.EmailComAnexoDto;
 import br.com.PzBurguer.emailMs.dto.EmailDto;
 import br.com.PzBurguer.emailMs.model.EmailModel;
 import br.com.PzBurguer.emailMs.service.EmailService;
@@ -24,6 +25,16 @@ public class EmailConsumer {
 
         BeanUtils.copyProperties(emailDto, emailModel);
 
-        emailService.sendEmail(emailModel);
+        emailService.sendWelcome(emailModel);
+    }
+
+    @RabbitListener(queues = "${broker.queue.email.nota-fiscal}")
+    public void listenNotaFiscalQueue(@Payload EmailComAnexoDto emailDto) {
+
+        var emailModel = new EmailModel();
+
+        BeanUtils.copyProperties(emailDto, emailModel);
+
+        emailService.sendNotaFiscal(emailModel);
     }
 }

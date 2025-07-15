@@ -1,4 +1,4 @@
-package br.com.fiap.PzBurguer.dto.responses;
+package br.com.fiap.PzBurguer.dto;
 
 import lombok.Data;
 

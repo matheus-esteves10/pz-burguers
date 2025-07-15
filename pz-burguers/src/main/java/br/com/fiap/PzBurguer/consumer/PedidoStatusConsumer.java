@@ -3,12 +3,14 @@ package br.com.fiap.PzBurguer.consumer;
 import br.com.fiap.PzBurguer.dto.listener.PagamentoStatusDto;
 import br.com.fiap.PzBurguer.service.PedidoService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PedidoStatusConsumer {
 
+    @Lazy
     private final PedidoService pedidoService;
 
     public PedidoStatusConsumer(PedidoService pedidoService) {

@@ -1,6 +1,6 @@
 package br.com.fiap.PzBurguer.producer;
 
-import br.com.fiap.PzBurguer.dto.responses.EmailDto;
+import br.com.fiap.PzBurguer.dto.EmailDto;
 import br.com.fiap.PzBurguer.model.Usuario;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;

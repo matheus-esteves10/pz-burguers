@@ -11,11 +11,19 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfig {
 
     @Value("${broker.queue.email.name}")
-    private String queue;
+    private String emailQueue;
+
+    @Value("${broker.queue.email.nota-fiscal}")
+    private String notaFiscalQueue;
 
     @Bean
-    public Queue queue() {
-        return new Queue(queue, true);
+    public Queue emailQueue() {
+        return new Queue(emailQueue, true);
+    }
+
+    @Bean
+    public Queue notaFiscalQueue() {
+        return new Queue(notaFiscalQueue, true);
     }
 
     @Bean
@@ -24,3 +32,4 @@ public class RabbitMqConfig {
         return new Jackson2JsonMessageConverter(mapper);
     }
 }
+

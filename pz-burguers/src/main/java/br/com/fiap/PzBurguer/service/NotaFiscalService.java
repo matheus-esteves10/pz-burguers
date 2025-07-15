@@ -1,12 +1,16 @@
 package br.com.fiap.PzBurguer.service;
 
+import br.com.fiap.PzBurguer.dto.result.Result;
 import br.com.fiap.PzBurguer.model.ItemPedido;
 import br.com.fiap.PzBurguer.model.Pedido;
+import br.com.fiap.PzBurguer.producer.NotaFiscalProducer;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,11 +18,10 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class NotaFiscalService {
 
-    public void gerarComprovante(Pedido pedido) {
+    public File gerarComprovante(Pedido pedido) {
         final String nomeArquivo = "comprovantes/nota-pedido-" + pedido.getId() + ".pdf";
 
         try {
-
             FileOutputStream outputStream = new FileOutputStream(nomeArquivo);
             Document document = new Document();
             PdfWriter.getInstance(document, outputStream);
@@ -43,9 +46,11 @@ public class NotaFiscalService {
             outputStream.close();
 
             System.out.println("✅ Comprovante gerado: " + nomeArquivo);
+            return new File(nomeArquivo);
 
         } catch (Exception e) {
             System.out.println("❌ Erro ao gerar comprovante: " + e.getMessage());
+            return null;
         }
     }
 
@@ -53,6 +58,7 @@ public class NotaFiscalService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         return data.format(formatter);
     }
+
 
 }
 

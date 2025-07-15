@@ -7,8 +7,6 @@ import br.com.fiap.PzBurguer.model.enums.UserRole;
 import br.com.fiap.PzBurguer.producer.UsuarioProducer;
 import br.com.fiap.PzBurguer.repository.UsuarioRepository;
 import br.com.fiap.PzBurguer.service.utilities.MensageriaUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

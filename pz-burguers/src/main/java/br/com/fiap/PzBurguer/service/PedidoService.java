@@ -1,26 +1,33 @@
 package br.com.fiap.PzBurguer.service;
 
+import br.com.fiap.PzBurguer.dto.EmailComAnexoDto;
 import br.com.fiap.PzBurguer.dto.PedidoDto;
 import br.com.fiap.PzBurguer.dto.responses.PedidosPendentesResponse;
 import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
 import br.com.fiap.PzBurguer.dto.result.Result;
+import br.com.fiap.PzBurguer.event.EnviarEmailComAnexoEvent;
 import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
 import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
 import br.com.fiap.PzBurguer.model.*;
 import br.com.fiap.PzBurguer.model.enums.StatusPagamento;
 import br.com.fiap.PzBurguer.model.enums.StatusPedido;
 import br.com.fiap.PzBurguer.model.enums.UserRole;
+import br.com.fiap.PzBurguer.producer.NotaFiscalProducer;
 import br.com.fiap.PzBurguer.producer.PagamentoProducer;
 import br.com.fiap.PzBurguer.repository.ItemRepository;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
 import br.com.fiap.PzBurguer.service.utilities.MensageriaUtilities;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -35,6 +42,8 @@ public class PedidoService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     private ItemRepository itemRepository;
@@ -44,6 +53,7 @@ public class PedidoService {
 
     @Autowired
     private NotaFiscalService notaFiscalService;
+
 
     @Transactional
     public Result<Pedido> criarPedido(PedidoDto dto, Usuario usuario) {
@@ -72,7 +82,6 @@ public class PedidoService {
 
         return MensageriaUtilities.enviarMensagemComFallback(pagamentoProducer, pedido);
     }
-
 
 
     public List<PedidosPendentesResponse> listarPedidosPendentes() {
@@ -104,7 +113,6 @@ public class PedidoService {
         checaPedido(pedido.getUsuario().getId(), usuario);
 
 
-
         pedido.setStatus(StatusPedido.CANCELADO);
         return Optional.of(pedidoRepository.save(pedido));
     }
@@ -121,29 +129,43 @@ public class PedidoService {
     }
 
     private void checaPedido(Long idUserPedido, Usuario usuario) {
-        if (usuario.getRole() == UserRole.RESTAURANTE){
+        if (usuario.getRole() == UserRole.RESTAURANTE) {
             return;
         }
-        if (!Objects.equals(idUserPedido, usuario.getId())){
+        if (!Objects.equals(idUserPedido, usuario.getId())) {
             throw new InvalidCancelException("O usuário que quer cancelar o pedido deve ser o mesmo que realizou o mesmo");
         }
     }
 
     public void atualizarStatusPagamento(Long idPedido, StatusPagamento status) {
-
         Optional<Pedido> pedidoOpt = pedidoRepository.findByIdComItens(idPedido);
         if (pedidoOpt.isPresent()) {
             Pedido pedido = pedidoOpt.get();
             pedido.setStatusPagamento(status);
             pedidoRepository.save(pedido);
 
-            System.out.println("🔄 Status do pedido " + idPedido + " atualizado para " + status);
-
             if (status == StatusPagamento.PAGO) {
-                notaFiscalService.gerarComprovante(pedido);
+                File comprovante = notaFiscalService.gerarComprovante(pedido);
+                if (comprovante != null) {
+                    try {
+                        byte[] arquivoBytes = Files.readAllBytes(comprovante.toPath());
+
+                        EmailComAnexoDto emailDto = new EmailComAnexoDto();
+                        emailDto.setEmailTo(pedido.getUsuario().getEmail());
+                        emailDto.setSubject("Comprovante do Pedido #" + pedido.getId());
+                        emailDto.setText("Olá " + pedido.getUsuario().getNome() + ", segue em anexo o comprovante do seu pedido.");
+                        emailDto.setAnexo(arquivoBytes);
+                        emailDto.setNomeArquivo(comprovante.getName());
+
+                        // Publica o evento para ser tratado pelo listener
+                        eventPublisher.publishEvent(new EnviarEmailComAnexoEvent(emailDto));
+
+                    } catch (IOException e) {
+                        System.out.println("❌ Erro ao ler o PDF: " + e.getMessage());
+                    }
+                }
             }
-        } else {
-            System.out.println("❌ Pedido com ID " + idPedido + " não encontrado para atualizar status.");
         }
     }
+
 }
