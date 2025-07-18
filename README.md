@@ -47,16 +47,16 @@ O sistema é dividido em **3 microsserviços** principais:
 
 Toda a comunicação entre os microsserviços é feita de forma **assíncrona** via **RabbitMQ**.
 
-### Exemplo de fluxo:
-1; Cliente realiza o cadastro → `pz-burguer`, e recebe email de confirmação pelo `email-service`
-2. Cliente realiza um pedido → `pz-burguer`
-3. Pedido é salvo → envia mensagem para `pagamento-service`
-4. `pagamento-service` processa o pagamento → responde com status
-5. Se pago, `pz-burguer`:
-   - Gera um comprovante em PDF
-   - Acontece evento para envio para o `email-service`
-   - Envia mensagem para o `email-service`
-6. `email-service` envia o e-mail com o anexo da nota fiscal em PDF 
+### 🔄Exemplo de fluxo:
+
+ 1️⃣ Cliente realiza o cadastro → pz-burguer → email-service envia e-mail de boas vindas
+ 2️⃣ Cliente realiza um pedido → pz-burguer salva pedido
+ 3️⃣ pz-burguer envia mensagem para pagamento-service
+ 4️⃣ pagamento-service processa o pagamento e responde com status
+ 5️⃣ Se aprovado, pz-burguer:
+ • gera comprovante em PDF
+ • envia mensagem para email-service
+ • email-service envia e-mail com anexo da nota fiscal em PDF
 
 ---
 
