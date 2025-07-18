@@ -6,6 +6,7 @@ import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
 import br.com.fiap.PzBurguer.dto.result.Result;
 import br.com.fiap.PzBurguer.model.Pedido;
 import br.com.fiap.PzBurguer.model.Usuario;
+import br.com.fiap.PzBurguer.model.enums.StatusPedido;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
 import br.com.fiap.PzBurguer.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -91,6 +93,25 @@ public class PedidoController {
             Pageable pageable) {
         return pedidoService.listarPedidosPorPeriodo(dataInicio, dataFim, pageable);
     }
+
+    @PutMapping("/status/{idPedido}/{newStatus}")
+    @PreAuthorize("hasRole('RESTAURANTE')")
+    @Operation(summary = "Alterar status do Pedido", responses = {
+            @ApiResponse(responseCode = "200", description = "Status alterado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Pedido não encontrado"),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida")
+    })
+    public Optional<ResponseEntity<ResponsePedidoDto>> alteraStatusPedido(
+            @PathVariable Long idPedido,
+            @PathVariable String newStatus) {
+
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<Pedido> pedidoAlterado = pedidoService.alteraStatus(idPedido, usuario, StatusPedido.valueOf(newStatus.toUpperCase()));
+
+        return pedidoAlterado
+                .map(pedido -> ResponseEntity.ok(ResponsePedidoDto.from(pedido)));
+    }
+
 
 }
 

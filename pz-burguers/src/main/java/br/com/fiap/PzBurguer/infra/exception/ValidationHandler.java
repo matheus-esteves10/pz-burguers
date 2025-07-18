@@ -1,9 +1,6 @@
 package br.com.fiap.PzBurguer.infra.exception;
 
-import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
-import br.com.fiap.PzBurguer.exceptions.MensageriaException;
-import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
-import br.com.fiap.PzBurguer.exceptions.UsuarioNotFoundException;
+import br.com.fiap.PzBurguer.exceptions.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -44,9 +41,9 @@ public class ValidationHandler {
         return error;
     }
 
-    @ExceptionHandler(InvalidCancelException.class)
+    @ExceptionHandler(InvalidActionException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleInvalidCancel(InvalidCancelException e) {
+    public Map<String, String> handleInvalidCancel(InvalidActionException e) {
         Map<String, String> error = new HashMap<>();
         error.put("error", "Pedido não pode ser cancelado");
         error.put("message", e.getMessage());
@@ -77,6 +74,24 @@ public class ValidationHandler {
         Map<String, String> error = new HashMap<>();
         error.put("error", e.getClass().getSimpleName());
         error.put("message", "Senha inválida");
+        return error;
+    }
+
+    @ExceptionHandler(StatusPedidoException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> statusPedido(StatusPedidoException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getClass().getSimpleName());
+        error.put("message", e.getMessage());
+        return error;
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> illegalArgumentException(IllegalArgumentException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getClass().getSimpleName());
+        error.put("message", e.getMessage());
         return error;
     }
 

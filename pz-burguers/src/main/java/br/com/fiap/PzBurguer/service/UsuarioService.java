@@ -28,7 +28,7 @@ public class UsuarioService {
         usuario.setEmail(dto.email());
         usuario.setTelefone(dto.telefone());
         usuario.setSenha(passwordEncoder.encode(dto.senha()));
-        usuario.setRole(UserRole.CLIENTE);
+        usuario.setRole(UserRole.RESTAURANTE);
 
         repository.save(usuario);
 

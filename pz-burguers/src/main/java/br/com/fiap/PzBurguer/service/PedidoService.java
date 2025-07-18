@@ -6,13 +6,12 @@ import br.com.fiap.PzBurguer.dto.responses.PedidosPendentesResponse;
 import br.com.fiap.PzBurguer.dto.responses.ResponsePedidoDto;
 import br.com.fiap.PzBurguer.dto.result.Result;
 import br.com.fiap.PzBurguer.event.EnviarEmailComAnexoEvent;
-import br.com.fiap.PzBurguer.exceptions.InvalidCancelException;
+import br.com.fiap.PzBurguer.exceptions.InvalidActionException;
 import br.com.fiap.PzBurguer.exceptions.OrderNotFoundException;
 import br.com.fiap.PzBurguer.model.*;
 import br.com.fiap.PzBurguer.model.enums.StatusPagamento;
 import br.com.fiap.PzBurguer.model.enums.StatusPedido;
 import br.com.fiap.PzBurguer.model.enums.UserRole;
-import br.com.fiap.PzBurguer.producer.NotaFiscalProducer;
 import br.com.fiap.PzBurguer.producer.PagamentoProducer;
 import br.com.fiap.PzBurguer.repository.ItemRepository;
 import br.com.fiap.PzBurguer.repository.PedidoRepository;
@@ -107,13 +106,25 @@ public class PedidoService {
                 .orElseThrow(() -> new OrderNotFoundException("Pedido de id " + idPedido + " não encontrado"));
 
         if (pedido.getStatus() != StatusPedido.SOLICITADO) {
-            throw new InvalidCancelException("Pedido com status diferente de SOLICITADO não pode ser cancelado");
+            throw new InvalidActionException("Pedido com status diferente de SOLICITADO não pode ser cancelado");
         }
 
         checaPedido(pedido.getUsuario().getId(), usuario);
 
 
         pedido.setStatus(StatusPedido.CANCELADO);
+        return Optional.of(pedidoRepository.save(pedido));
+    }
+
+    public Optional<Pedido> alteraStatus(Long idPedido, Usuario usuario, StatusPedido novoStatus) {
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new OrderNotFoundException("Pedido de id " + idPedido + " não encontrado"));
+
+
+        StatusPedido statusAtual = pedido.getStatus();
+        StatusPedido statusFinal = statusAtual.transicionaPara(novoStatus);
+        pedido.setStatus(statusFinal);
+
         return Optional.of(pedidoRepository.save(pedido));
     }
 
@@ -133,7 +144,7 @@ public class PedidoService {
             return;
         }
         if (!Objects.equals(idUserPedido, usuario.getId())) {
-            throw new InvalidCancelException("O usuário que quer cancelar o pedido deve ser o mesmo que realizou o mesmo");
+            throw new InvalidActionException("O usuário que quer mudar o status o pedido deve ser o mesmo que realizou o pedido");
         }
     }
 

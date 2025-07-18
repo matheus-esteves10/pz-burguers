@@ -1,16 +1,10 @@
 package br.com.fiap.PzBurguer.producer;
 
 import br.com.fiap.PzBurguer.dto.EmailComAnexoDto;
-import br.com.fiap.PzBurguer.model.Pedido;
 import br.com.fiap.PzBurguer.service.NotaFiscalService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
 @Component
 public class NotaFiscalProducer implements IProducer<EmailComAnexoDto> {
