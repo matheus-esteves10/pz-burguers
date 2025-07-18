@@ -11,6 +11,7 @@ import br.com.fiap.PzBurguer.repository.PedidoRepository;
 import br.com.fiap.PzBurguer.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ public class PedidoController {
    private PedidoRepository pedidoRepository;
 
    @PostMapping
+   @SecurityRequirement(name = "bearerAuth")
    @Transactional
    @Operation(summary = "Cadastrar pedido", responses = {@ApiResponse(responseCode = "201"),
            @ApiResponse(responseCode = "404")
@@ -56,6 +58,7 @@ public class PedidoController {
    }
 
     @GetMapping("/restaurante/pendentes")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Listar pedidos pendentes", responses = {@ApiResponse(responseCode = "200")})
     public ResponseEntity<List<PedidosPendentesResponse>> listarPedidosPendentes() {
         List<PedidosPendentesResponse> pedidosPendentes = pedidoService.listarPedidosPendentes();
@@ -63,6 +66,7 @@ public class PedidoController {
     }
 
     @DeleteMapping("/cancelar/{idPedido}")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Cancelar pedido", responses = {@ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "404"),
             @ApiResponse(responseCode = "400")
@@ -74,6 +78,7 @@ public class PedidoController {
     }
 
     @GetMapping("/restaurante/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Listar pedido", responses = {@ApiResponse(responseCode = "200"),
     @ApiResponse(responseCode = "404")
     })
@@ -87,6 +92,8 @@ public class PedidoController {
     }
 
     @GetMapping("/restaurante/periodo")
+    @Operation(summary = "Listar pedidos por intervalo de tempo")
+    @SecurityRequirement(name = "bearerAuth")
     public Page<ResponsePedidoDto> listarPedidosPorPeriodo(
             @RequestParam("dataInicio") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
             @RequestParam("dataFim") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim,
@@ -95,6 +102,7 @@ public class PedidoController {
     }
 
     @PutMapping("/status/{idPedido}/{newStatus}")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('RESTAURANTE')")
     @Operation(summary = "Alterar status do Pedido", responses = {
             @ApiResponse(responseCode = "200", description = "Status alterado com sucesso"),

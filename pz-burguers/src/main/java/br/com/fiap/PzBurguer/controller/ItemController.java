@@ -9,6 +9,7 @@ import br.com.fiap.PzBurguer.service.ItemService;
 import br.com.fiap.PzBurguer.service.filters.ItemFilter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public class ItemController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @PostMapping()
+    @SecurityRequirement(name = "bearerAuth")
     @CacheEvict(value = "categories", allEntries = true)
     @Operation(
             summary = "Cadastrar item",

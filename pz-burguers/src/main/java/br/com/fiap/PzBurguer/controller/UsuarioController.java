@@ -5,6 +5,7 @@ import br.com.fiap.PzBurguer.dto.responses.UsuarioResponseDto;
 import br.com.fiap.PzBurguer.dto.result.Result;
 import br.com.fiap.PzBurguer.model.Usuario;
 import br.com.fiap.PzBurguer.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ public class UsuarioController {
     }
 
     @PostMapping()
+    @Operation(summary = "Cadastro de usuário")
     public ResponseEntity<UsuarioResponseDto> create(@RequestBody @Valid CadastroDto dto) {
         log.info("Cadastrando o usuário: " + dto.email());
 
